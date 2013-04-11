@@ -1,7 +1,7 @@
 from bs4 import BeautifulSoup
 import urllib
 
-def snag(url):
+def snagpage(url):
     page = BeautifulSoup(urllib.urlopen(url).read())
     print(page.title.string)
     
@@ -17,3 +17,15 @@ def snag(url):
         if span.has_key('class'): #and span['class'] == 'ingredient-name':
             print(span.string)
             ingred.append(span.string)
+
+def getpages():
+    url = 'http://allrecipes.com/recipes/ViewAll.aspx'
+    page = BeautifulSoup(urllib.urlopen(url).read())
+    links = set()
+    for link in page.find_all('a'):
+        if link.has_key('href'):
+            if 'detail.aspx' in link['href'] and 'recipe/' in link['href']:
+                links.add(link['href'])
+    print(links)
+
+getpages()
