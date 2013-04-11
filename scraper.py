@@ -4,21 +4,23 @@ import urllib
 def getcontent(url):
     try:
         page = BeautifulSoup(urllib.urlopen(url).read())
-    #print(page.title.string)
-    
+        
+        #find title
         name = page.find('h1', id='itemTitle')
         print(name.string)
 
+        #find photograph
         photo = page.find('img', id='imgPhoto', itemprop='image')
         print(photo['src'])
         
+        #find ingredients
         ingred = []
-    
         for span in page.find_all('span', 'ingredient-name'):
             if span.has_key('class'): #and span['class'] == 'ingredient-name':
                 print(span.string)
                 ingred.append(span.string)
     except:
+        #do nothing if cannot connect
         pass
 
 
@@ -29,11 +31,14 @@ def getpagesAR(url):
         if link.has_key('href'):
             if 'detail.aspx' in link['href'] and 'recipe/' in link['href']:
                 links.add(link['href'])
-            #if 'NEXT' in link.string:
-                #print('has next!')
-                #getpagesAR(link['href'])
-    print(links)
+
+            #goes to the next page
+            if link.string is not None and "NEXT" in link.string:
+                print(link['href'])
+                getpagesAR(link['href'])
+
+    #gets recipe information
     for link in links:
         getcontent(link)
 
-getpagesAR('http://allrecipes.com/recipes/ViewAll.aspx')
+getpagesAR('http://allrecipes.com/recipes/main-dish/ViewAll.aspx?Photos=On')
