@@ -1,38 +1,29 @@
-from sqlalchemy import Column, create_engine, Integer, String
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
+from django.db import models
 
-engine = create_engine('mysql://' + 'username:password' + '@' +
-        'localhost/databasename')
-
-Base = declarative_base(bind=engine)
-Session = sessionmaker(bind=engine)
-
-class Recipe(Base):
+class Recipe(models.Model):
     __tablename__ = "tblRecipe"
-    rid = Column(Integer, primary_key=True)
-    url = Column(String(60))
-    description = Column(String(260))
-    name = Column(String(60))
+    rid = models.IntegerField()
+    url = models.CharField(max_length=260)
+    description = models.CharField(max_length=260)
+    name = models.CharField(max_length=60)
     
-class IngredientGroup(Base):
+class IngredientGroup(models.Model):
     __tablename__ = "tblIngredientGroup"
-    gid = Column(Integer, primary_key=True)
-    groupname = Column(String(60))
+    gid = models.CharField(max_length=60,primary_key=True)
+    groupname = models.CharField(max_length=60)
 
-class Ingredient(Base):
+class Ingredient(models.Model):
     __tablename__ = "tblIngredient"
-    iid = Column(Integer, primary_key=True)
-    name = Column(String(20))
+    iid = models.CharField(max_length=60,primary_key=True)
+    name = models.CharField(max_length=60)
 
-class Contains(Base):
+class Contains(models.Model):
     __tablename__ = "tblContains"
-    iid = Column(Integer, ForeignKey("IngredientGroup.iid"))
-    rid = Column(Integer, ForeignKey("Recipe.rid"))
+    iid = models.ForeignKey(IngredientGroup.iid))
+    rid = models.ForeignKey(Recipe.rid))
 
-class GroupContains(Base):
+class GroupContains(models.Model):
     __tablename__ = "tblGroupContains"
-    gcid = Column(Integer, primary_key=true)
-    gid = Column(Integer, ForeignKey("Recipe.gid"))
-    iid = Column(Integer, ForeignKey("IngredientGroup.iid"))
+    gid = models.ForeignKey(Recipe.gid))
+    iid = models.ForeignKey(IngredientGroup))
     
