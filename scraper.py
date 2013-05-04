@@ -27,18 +27,22 @@ def getcontent(url):
 def getpagesAR(url):
     page = BeautifulSoup(urllib.urlopen(url).read())
     links = set()
+    nexturl = None
     for link in page.find_all('a'):
         if link.has_key('href'):
             if 'detail.aspx' in link['href'] and 'recipe/' in link['href']:
                 links.add(link['href'])
 
-            #goes to the next page
+            #gets lintto the next page
             if link.string is not None and "NEXT" in link.string:
-                print(link['href'])
-                getpagesAR(link['href'])
-
+                nexturl = link['href']
     #gets recipe information
     for link in links:
         getcontent(link)
+    
+    if nexturl is not None:
+        getpagesAR(nexturl)
 
 getpagesAR('http://allrecipes.com/recipes/main-dish/ViewAll.aspx?Photos=On')
+
+
